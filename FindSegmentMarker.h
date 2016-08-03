@@ -1,5 +1,5 @@
 
-#pragma once
+
 
 #include "opencv2/opencv.hpp" 
 #include <math.h>
@@ -9,11 +9,11 @@
 
 typedef struct
 {
-	char key;		//Ïß¶Î±àÂë£º¡°0¡±¡°1¡±¡°-1¡±
-	cv::Point ep0;	//Ïß¶Î¶Ëµã0×ø±ê(ÏñËØ×ø±ê)
-	cv::Point ep1;	//Ïß¶Î¶Ëµã1×ø±ê£¨ÏñËØ×ø±ê£©
-	//cv::Point pi0;	//Ïß¶Î¶Ëµã0×ø±ê£¨ÏñËØ×ø±ê£©
-	//cv::Point pi1;	//Ïß¶Î¶Ëµã1×ø±ê£¨ÏñËØ×ø±ê£©
+	char key;		//çº¿æ®µç¼–ç ï¼šâ€œ0â€â€œ1â€â€œ-1â€
+	cv::Point ep0;	//çº¿æ®µç«¯ç‚¹0åæ ‡(åƒç´ åæ ‡)
+	cv::Point ep1;	//çº¿æ®µç«¯ç‚¹1åæ ‡ï¼ˆåƒç´ åæ ‡ï¼‰
+	//cv::Point pi0;	//çº¿æ®µç«¯ç‚¹0åæ ‡ï¼ˆåƒç´ åæ ‡ï¼‰
+	//cv::Point pi1;	//çº¿æ®µç«¯ç‚¹1åæ ‡ï¼ˆåƒç´ åæ ‡ï¼‰
 }_KEY_SEGMENT;
 
 #define minv(x,y) ( (x>y)?y:x)
@@ -21,23 +21,23 @@ typedef struct
 class FindSegmentMarker
 {
 	public:
-	//--------------------------------------------------------------¹¹Ôìº¯Êı--------------------------------------------------------//
+	//--------------------------------------------------------------æ„é€ å‡½æ•°--------------------------------------------------------//
 
-	FindSegmentMarker(cv::Mat srcimage) //¶ÔÓ¦ÊäÈëÍ¼Ïñ£¬Êä³ö£¬ÒÔ¼°Ïà»ú±àÂë012, Ïò×ó£¨0£©»òÕßÏòÓÒ£¨1£©
+	FindSegmentMarker(cv::Mat srcimage) //å¯¹åº”è¾“å…¥å›¾åƒï¼Œè¾“å‡ºï¼Œä»¥åŠç›¸æœºç¼–ç 012, å‘å·¦ï¼ˆ0ï¼‰æˆ–è€…å‘å³ï¼ˆ1ï¼‰
 	{
-		loadImg(srcimage);//ÔØÈëÍ¼Ïñ
-		//setMask();//ÉèÖÃmask(ÒòÎª²»Ì«×¼È·£¬ÏÈ²»ÓÃ)
+		loadImg(srcimage);//è½½å…¥å›¾åƒ
+		//setMask();//è®¾ç½®mask(å› ä¸ºä¸å¤ªå‡†ç¡®ï¼Œå…ˆä¸ç”¨)
 
 	}
-	//--------------------------------------------------------------Êä³ö½Ó¿Ú---------------------------------------------------------//
-	void getResult(std::vector<_KEY_SEGMENT>&segments, bool f_or_b)//¸ø³ö½á¹ûµÄ½Ó¿Ú
+	//--------------------------------------------------------------è¾“å‡ºæ¥å£---------------------------------------------------------//
+	void getResult(std::vector<_KEY_SEGMENT>&segments, bool f_or_b)//ç»™å‡ºç»“æœçš„æ¥å£
 	{
-		imgAdjust();//ÔöÇ¿Í¼Ïñ¶Ô±È¶È
+		imgAdjust();//å¢å¼ºå›¾åƒå¯¹æ¯”åº¦
 
-		grabCut(f_or_b);//´ÖÌáÈ¡
-		imgThreshold();//¶şÖµ»¯
-		findContours();//ÕÒµ½ÂÖÀª
-		setLSThreshold();//ÉèÖÃ³¤¶ÌãĞÖµ
+		grabCut(f_or_b);//ç²—æå–
+		imgThreshold();//äºŒå€¼åŒ–
+		findContours();//æ‰¾åˆ°è½®å»“
+		setLSThreshold();//è®¾ç½®é•¿çŸ­é˜ˆå€¼
 
 
 		for (int i = 0; i < exactContours.size(); i++)
@@ -52,7 +52,7 @@ class FindSegmentMarker
 
 		saveResult(segments);
 	}
-	//===============================================================¸÷ÖÖÌáÈ¡Êı¾İµÄº¯Êı=======================================================//
+	//===============================================================å„ç§æå–æ•°æ®çš„å‡½æ•°=======================================================//
 	cv::Mat getimgOriginal()
 	{
 		return imgOriginal;
@@ -88,37 +88,37 @@ class FindSegmentMarker
 
 	private:
 
-		//===================================================Ö÷ÒªÓÃÀ´´æ´¢¸÷ÖÖÖĞ¼äÊı¾İ±ãÓÚµ÷ÊÔ=================================================//
-		bool f_or_b;//È·¶¨Ïò×óorÏòÓÒÕÒ
+		//===================================================ä¸»è¦ç”¨æ¥å­˜å‚¨å„ç§ä¸­é—´æ•°æ®ä¾¿äºè°ƒè¯•=================================================//
+		bool f_or_b;//ç¡®å®šå‘å·¦orå‘å³æ‰¾
 
-		cv::Mat imgOriginal;//Ô­Ê¼Í¼Ïñ
-		cv::Mat imgForeground;//´ÖÌáÈ¡ºóµÄÍ¼Ïñ
-		cv::Mat imgForGray;//´ÖÌáÈ¡ºó×ªÎª»Ò¶ÈÍ¼Ïñ
-		cv::Mat imgBinary;//´ÖÌåÈ¡ºóµÄÍ¼Ïñ½øĞĞ¶şÖµ»¯
-		cv::Mat imgSort;//ÂÖÀªÅÅĞòºóÍ¼Æ¬£¬¿É´ÓºìÉ«Éî¶ÈÊÇ·ñ½¥±äÅĞ¶Ï
-		cv::Mat imgSharpen;//Èñ»¯Í¼Æ¬£¬Ôö¼Ó¶Ô±È¶È
+		cv::Mat imgOriginal;//åŸå§‹å›¾åƒ
+		cv::Mat imgForeground;//ç²—æå–åçš„å›¾åƒ
+		cv::Mat imgForGray;//ç²—æå–åè½¬ä¸ºç°åº¦å›¾åƒ
+		cv::Mat imgBinary;//ç²—ä½“å–åçš„å›¾åƒè¿›è¡ŒäºŒå€¼åŒ–
+		cv::Mat imgSort;//è½®å»“æ’åºåå›¾ç‰‡ï¼Œå¯ä»çº¢è‰²æ·±åº¦æ˜¯å¦æ¸å˜åˆ¤æ–­
+		cv::Mat imgSharpen;//é”åŒ–å›¾ç‰‡ï¼Œå¢åŠ å¯¹æ¯”åº¦
 
-		cv::Mat lineDiss;//ÓÃÀ´´æ´¢Ã¿ÌõÖ±Ïß³¤¶ÈµÄÒ»Î¬Êı×é(validCon.size(), 1, CV_32FC1)
-		cv::Mat mask;//´æ´¢´ÖÌáÈ¡ĞèÒªµÄmask
+		cv::Mat lineDiss;//ç”¨æ¥å­˜å‚¨æ¯æ¡ç›´çº¿é•¿åº¦çš„ä¸€ç»´æ•°ç»„(validCon.size(), 1, CV_32FC1)
+		cv::Mat mask;//å­˜å‚¨ç²—æå–éœ€è¦çš„mask
 
-		std::vector<std::vector<cv::Point>> roughContours;//´ÖÌáÈ¡ÂÖÀª
-		std::vector<std::vector<cv::Point>> exactContours;//ÌŞ³ıÎŞĞ§ÂÖÀªºóµÄÓĞĞ§ÂÖÀª
+		std::vector<std::vector<cv::Point>> roughContours;//ç²—æå–è½®å»“
+		std::vector<std::vector<cv::Point>> exactContours;//å‰”é™¤æ— æ•ˆè½®å»“åçš„æœ‰æ•ˆè½®å»“
 		
-		double shortThreshold, longThreshold;//ÅĞ¶ÏÖ±Ïß³¤¶ÈµÄÁ½¸öãĞÖµ
+		double shortThreshold, longThreshold;//åˆ¤æ–­ç›´çº¿é•¿åº¦çš„ä¸¤ä¸ªé˜ˆå€¼
 		std::vector<double> shortTV, longTV;
-		double lightThreshold;//Í¼Ïñ¶şÖµ»¯µÄãĞÖµ
+		double lightThreshold;//å›¾åƒäºŒå€¼åŒ–çš„é˜ˆå€¼
 
-		cv::Rect rectangle;//´ÖÌáÈ¡Ê±µÄÇøÓò£¬¿Ó1¾¡Á¿ÓÃmask´úÌæ
-		cv::Mat roughCut;//´ÖÌáÈ¡ÓÃµÄmask
+		cv::Rect rectangle;//ç²—æå–æ—¶çš„åŒºåŸŸï¼Œå‘1å°½é‡ç”¨maskä»£æ›¿
+		cv::Mat roughCut;//ç²—æå–ç”¨çš„mask
 
-		std::vector<_KEY_SEGMENT> result;//´æ´¢½á¹û
+		std::vector<_KEY_SEGMENT> result;//å­˜å‚¨ç»“æœ
 
-		//ÊµÑéĞÔÊı¾İ´æ´¢
-		cv::Mat imgMeanshift;//²ÉÓÃmeanshiftËã·¨
+		//å®éªŒæ€§æ•°æ®å­˜å‚¨
+		cv::Mat imgMeanshift;//é‡‡ç”¨meanshiftç®—æ³•
 
 	public:
 
-		//¶ÁÈ¡Í¼Ïñ
+		//è¯»å–å›¾åƒ
 		void loadImg(cv::Mat srcimage)
 		{
 			srcimage.copyTo(imgOriginal);
@@ -127,13 +127,13 @@ class FindSegmentMarker
 
 
 
-		//Éú³ÉÓÃÓÚ´ÖÌáÈ¡µÄmask
+		//ç”Ÿæˆç”¨äºç²—æå–çš„mask
 		void buildMask(cv::Mat imgMask0)
 		{
 			
 			cv::Mat mask0(imgMask0.size(), CV_8UC1);
 			cv::Mat mask1(imgMask0.size(), CV_8UC1);
-			//for (int i = 0; i < imgMask0.rows; i++)//ĞĞÊı(»áÓĞÉñÆæµÄÊÂÇé·¢Éú£¬²»ÖªÎªºÎ)
+			//for (int i = 0; i < imgMask0.rows; i++)//è¡Œæ•°(ä¼šæœ‰ç¥å¥‡çš„äº‹æƒ…å‘ç”Ÿï¼Œä¸çŸ¥ä¸ºä½•)
 			//{
 			//	for (int j = 0; j < imgMask0.cols; j++)
 			//	{
@@ -155,17 +155,17 @@ class FindSegmentMarker
 			//		//std::cout << j << std::endl;
 			//	}
 			//}
-			cv::Mat maskTem1,maskTem3;//´æ´¢ Ç°¾°  ¿ÉÄÜÇ°¾°
+			cv::Mat maskTem1,maskTem3;//å­˜å‚¨ å‰æ™¯  å¯èƒ½å‰æ™¯
 			cv::compare(imgMask0, 10, maskTem1, cv::CMP_LT);
 			cv::compare(imgMask0, 250, maskTem3, cv::CMP_LT);
-			maskTem3 = maskTem3 - maskTem1;//¿ÉÄÜÇ°¾°+Ç°¾°¼õÈ¥Ç°¾°=¿ÉÄÜÇ°¾°
+			maskTem3 = maskTem3 - maskTem1;//å¯èƒ½å‰æ™¯+å‰æ™¯å‡å»å‰æ™¯=å¯èƒ½å‰æ™¯
 			maskTem1 = maskTem1 / 255;
 			maskTem3 = maskTem3 / 255;
-			maskTem3 = maskTem3 * 3;//¿ÉÄÜÇ°¾°ÓÃ3±íÊ¾
+			maskTem3 = maskTem3 * 3;//å¯èƒ½å‰æ™¯ç”¨3è¡¨ç¤º
 			mask0 = maskTem1 + maskTem3;
 			//mask0.convertTo(mask0, CV_8UC1);
 
-			cv::flip(mask0, mask1,1);//°´ÕÕyÖá¾µÏñµÃµ½mask1
+			cv::flip(mask0, mask1,1);//æŒ‰ç…§yè½´é•œåƒå¾—åˆ°mask1
 
 			cv::Mat test;
 			imgOriginal.copyTo(test, mask0);
@@ -182,7 +182,7 @@ class FindSegmentMarker
 		}
 
 
-		//¸ø³ö½á¹ûÍ¼Ïñ
+		//ç»™å‡ºç»“æœå›¾åƒ
 		cv::Mat getimgresult()
 		{
 			cv::Mat imgResult;
@@ -212,36 +212,36 @@ class FindSegmentMarker
 
 
 
-		//Í¼Ïñ¶Ô±È¶ÈÔöÇ¿
+		//å›¾åƒå¯¹æ¯”åº¦å¢å¼º
 		void imgAdjust()
 		{
 
-			//===============ÕâÖÖ°ì·¨²»ºÃÓÃ===================//
-			//cv::Mat mergeImg;//ºÏ²¢ºóµÄÍ¼Ïñ
-			////ÓÃÀ´´æ´¢¸÷Í¨µÀÍ¼Æ¬µÄÏòÁ¿
+			//===============è¿™ç§åŠæ³•ä¸å¥½ç”¨===================//
+			//cv::Mat mergeImg;//åˆå¹¶åçš„å›¾åƒ
+			////ç”¨æ¥å­˜å‚¨å„é€šé“å›¾ç‰‡çš„å‘é‡
 			//std::vector<cv::Mat> splitBGR(imgOriginal.channels());
-			////·Ö¸îÍ¨µÀ£¬´æ´¢µ½splitBGRÖĞ
+			////åˆ†å‰²é€šé“ï¼Œå­˜å‚¨åˆ°splitBGRä¸­
 			//split(imgOriginal, splitBGR);
-			////¶Ô¸÷¸öÍ¨µÀ·Ö±ğ½øĞĞÖ±·½Í¼¾ùºâ»¯
+			////å¯¹å„ä¸ªé€šé“åˆ†åˆ«è¿›è¡Œç›´æ–¹å›¾å‡è¡¡åŒ–
 			//for (int i = 0; i<imgOriginal.channels(); i++)
 			//	equalizeHist(splitBGR[i], splitBGR[i]);
-			////ºÏ²¢Í¨µÀ
+			////åˆå¹¶é€šé“
 			//merge(splitBGR, mergeImg);
 
-			//mergeImg.copyTo(imgSharpen);//´æ´¢Èñ»¯ºóµÄÍ¼Ïñ
+			//mergeImg.copyTo(imgSharpen);//å­˜å‚¨é”åŒ–åçš„å›¾åƒ
 
 
 
 
 			imgOriginal.copyTo(imgSharpen);
 		}
-		//´æ´¢½á¹û
+		//å­˜å‚¨ç»“æœ
 		void saveResult(std::vector<_KEY_SEGMENT>&segments)
 		{
 			result.assign(segments.begin(), segments.end());
 		}
 
-		//È·¶¨maskÎ»ÖÃ£¨²»ÊÇºÜºÃÓÃ£¬Ã»ÓÃÉÏ£©
+		//ç¡®å®šmaskä½ç½®ï¼ˆä¸æ˜¯å¾ˆå¥½ç”¨ï¼Œæ²¡ç”¨ä¸Šï¼‰
 		void setMask()
 		{
 			cv::Mat maskTem0;
@@ -270,7 +270,7 @@ class FindSegmentMarker
 		}
 
 
-		//´ÖÌáÈ¡Í¼Ïñ
+		//ç²—æå–å›¾åƒ
 		void grabCut(bool f_or_b)
 		{
 			FindSegmentMarker::f_or_b = f_or_b;
@@ -287,70 +287,70 @@ class FindSegmentMarker
 			}
 			
 			
-			cv::Mat bgModel, fgModel;//;ÖĞ¼ä±äÁ¿
-			cv::Mat result;//mask£¬ÖĞ¼ä±äÁ¿
+			cv::Mat bgModel, fgModel;//;ä¸­é—´å˜é‡
+			cv::Mat result;//maskï¼Œä¸­é—´å˜é‡
 
-			cv::grabCut(imgSharpen, mask, rectangle, bgModel, fgModel, 2, cv::GC_INIT_WITH_MASK);//¹Ø¼üº¯Êı,»®·Ö´óÖÂÇøÓò
+			cv::grabCut(imgSharpen, mask, rectangle, bgModel, fgModel, 2, cv::GC_INIT_WITH_MASK);//å…³é”®å‡½æ•°,åˆ’åˆ†å¤§è‡´åŒºåŸŸ
 
-			//±È½Ïº¯Êı±£ÁôÖµÎªGC_PR_FGDµÄÏñËØ(¸ÄÎªÁôÏÂÎªÇ°¾°µÄ²¿·Ö)
+			//æ¯”è¾ƒå‡½æ•°ä¿ç•™å€¼ä¸ºGC_PR_FGDçš„åƒç´ (æ”¹ä¸ºç•™ä¸‹ä¸ºå‰æ™¯çš„éƒ¨åˆ†)
 			cv::Mat maskTem1,maskTem3;
 			cv::compare(mask, cv::GC_FGD, maskTem1, cv::CMP_EQ);
 			cv::compare(mask, cv::GC_PR_FGD, maskTem3, cv::CMP_EQ);
 			mask = maskTem1 + maskTem3;
-			// ----------------------------------²úÉúÊä³öÍ¼Ïñ----------------------------//
+			// ----------------------------------äº§ç”Ÿè¾“å‡ºå›¾åƒ----------------------------//
 			cv::Mat Foreground(imgSharpen.size(), CV_8UC3, cv::Scalar(255, 255, 255));
-			//±³¾°ÖµÎª GC_BGD=0£¬×÷ÎªÑÚÂë
+			//èƒŒæ™¯å€¼ä¸º GC_BGD=0ï¼Œä½œä¸ºæ©ç 
 			imgSharpen.copyTo(Foreground, mask);
 			//cv::imwrite("Data\\afterMask.jpg", Foreground);
 			Foreground.copyTo(imgForeground);
 
 			cv::imwrite("Data\\fore.jpg", imgForeground);
 
-			//ÒÔÇ°Ê¹ÓÃµÄ»®·Ö³¤·½ĞÎÇøÓòµÄ·½·¨£¬ÒÑ¾­ÉáÆú
-			//cv::Mat bgModel, fgModel;//;ÖĞ¼ä±äÁ¿
-			//cv::Mat result;//mask£¬ÖĞ¼ä±äÁ¿
+			//ä»¥å‰ä½¿ç”¨çš„åˆ’åˆ†é•¿æ–¹å½¢åŒºåŸŸçš„æ–¹æ³•ï¼Œå·²ç»èˆå¼ƒ
+			//cv::Mat bgModel, fgModel;//;ä¸­é—´å˜é‡
+			//cv::Mat result;//maskï¼Œä¸­é—´å˜é‡
 			//rectangle = (f_or_b == 0) ? cv::Rect(60, 650, 220, 560) : cv::Rect(800, 311, 210, 1318);
-			//cv::grabCut(imgOriginal, result, rectangle, bgModel, fgModel, 5, cv::GC_INIT_WITH_RECT);//¹Ø¼üº¯Êı,»®·Ö´óÖÂÇøÓò
-			////±È½Ïº¯Êı±£ÁôÖµÎªGC_PR_FGDµÄÏñËØ
+			//cv::grabCut(imgOriginal, result, rectangle, bgModel, fgModel, 5, cv::GC_INIT_WITH_RECT);//å…³é”®å‡½æ•°,åˆ’åˆ†å¤§è‡´åŒºåŸŸ
+			////æ¯”è¾ƒå‡½æ•°ä¿ç•™å€¼ä¸ºGC_PR_FGDçš„åƒç´ 
 			//cv::compare(result, cv::GC_PR_FGD, result, cv::CMP_EQ);
-			//// ²úÉúÊä³öÍ¼Ïñ
+			//// äº§ç”Ÿè¾“å‡ºå›¾åƒ
 			//cv::Mat Foreground(imgOriginal.size(), CV_8UC3, cv::Scalar(255, 255, 255));
-			////±³¾°ÖµÎª GC_BGD=0£¬×÷ÎªÑÚÂë
+			////èƒŒæ™¯å€¼ä¸º GC_BGD=0ï¼Œä½œä¸ºæ©ç 
 			//imgOriginal.copyTo(Foreground, result);
-			//Foreground.copyTo(imgForeground);//´ÖÌáÈ¡Íê³É
+			//Foreground.copyTo(imgForeground);//ç²—æå–å®Œæˆ
 		}
 
 
 
-		////ÉèÖÃ´ÖÌáÈ¡ËùÓÃµ½µÄmask
+		////è®¾ç½®ç²—æå–æ‰€ç”¨åˆ°çš„mask
 		//void setMask(cv::Mat)
 		//{
 		//	
 		//}
 
 
-		////ÖØÔØ,ÓÃmask·½Ê½´ÖÌáÈ¡
+		////é‡è½½,ç”¨maskæ–¹å¼ç²—æå–
 		//void grab(cv::Mat roughCut)
 		//{
 		//	
 		//}
 
-		//´ÖÌáÈ¡ºóÍ¼Ïñ¶şÖµ»¯
-		void imgThreshold(double lightThreshold=60)//Ä¬ÈÏÎª60
+		//ç²—æå–åå›¾åƒäºŒå€¼åŒ–
+		void imgThreshold(double lightThreshold=60)//é»˜è®¤ä¸º60
 		{
 			cv::Mat foreGray(imgOriginal.size(),CV_32FC1);
 			cv::Mat foreBinary(imgOriginal.size(), CV_32FC1);
 
-			//¼ÙÈç²»×ö»Ò¶ÈÖµÕÛËã¶øÊÇÄÃ³öÂÌÉ«Í¨µÀ×÷Îª¡°»Ò¶ÈÍ¼¡±£¿(Í¨¹ı£¬Ğ§¹û»¹¿ÉÒÔ)
+			//å‡å¦‚ä¸åšç°åº¦å€¼æŠ˜ç®—è€Œæ˜¯æ‹¿å‡ºç»¿è‰²é€šé“ä½œä¸ºâ€œç°åº¦å›¾â€ï¼Ÿ(é€šè¿‡ï¼Œæ•ˆæœè¿˜å¯ä»¥)
 			std::vector<cv::Mat> BGR;
 			cv::split(imgForeground, BGR);
 			BGR[1].copyTo(foreGray);
-			//cv::cvtColor(imgForeground, foreGray, CV_BGR2GRAY);//×ª»¯Îª»Ò¶ÈÍ¼Ïñ£¬·½±ã×ªÎª¶şÖµÍ¼
+			//cv::cvtColor(imgForeground, foreGray, CV_BGR2GRAY);//è½¬åŒ–ä¸ºç°åº¦å›¾åƒï¼Œæ–¹ä¾¿è½¬ä¸ºäºŒå€¼å›¾
 
-			//¼ÙÈç½«µÃµ½µÄ»Ò¶ÈÍ¼ÏñÒ²ÔÙÈñ»¯Ò»±é»á²»»á½µµÍãĞÖµÉèÖÃµÄÄÑ¶È(²»»á£¬Í¼Ïñ±ä³É´óÆ¬°×É«£¬×ĞÏ¸¿´¿´Èñ»¯µÄÔ­ÀíÔÙÓÃ°É)
+			//å‡å¦‚å°†å¾—åˆ°çš„ç°åº¦å›¾åƒä¹Ÿå†é”åŒ–ä¸€éä¼šä¸ä¼šé™ä½é˜ˆå€¼è®¾ç½®çš„éš¾åº¦(ä¸ä¼šï¼Œå›¾åƒå˜æˆå¤§ç‰‡ç™½è‰²ï¼Œä»”ç»†çœ‹çœ‹é”åŒ–çš„åŸç†å†ç”¨å§)
 			/*cv::equalizeHist(foreGray, foreGray);*/
 
-			cv::threshold(foreGray, foreBinary, 85, 255, 1);//µÃµ½Ö»ÓĞÏß¶ÎÂÖÀªµÄ¶şÖµÍ¼Ïñ£¨¿Ó2£¬Ó¦¸Ã¸ù¾İÍ¼Ïñ×ÜÌåÁÁ¶È½øĞĞÅĞ¶Ï¡£ÈÔÈ»¿ÉÒÔ°´ÕÕkmeans·½·¨»òÕßcvAvgº¯Êı£©
+			cv::threshold(foreGray, foreBinary, 85, 255, 1);//å¾—åˆ°åªæœ‰çº¿æ®µè½®å»“çš„äºŒå€¼å›¾åƒï¼ˆå‘2ï¼Œåº”è¯¥æ ¹æ®å›¾åƒæ€»ä½“äº®åº¦è¿›è¡Œåˆ¤æ–­ã€‚ä»ç„¶å¯ä»¥æŒ‰ç…§kmeansæ–¹æ³•æˆ–è€…cvAvgå‡½æ•°ï¼‰
 
 	
 			foreGray.copyTo(imgForGray);
@@ -360,22 +360,22 @@ class FindSegmentMarker
 		}
 
 
-		//²éÕÒÂÖÀª²¢¸ù¾İ¶àÖÖ·½·¨ÌŞ³ıÎŞĞ§ÂÖÀª
+		//æŸ¥æ‰¾è½®å»“å¹¶æ ¹æ®å¤šç§æ–¹æ³•å‰”é™¤æ— æ•ˆè½®å»“
 		void findContours()
 		{
-			//´Ó¶şÖµÍ¼ÏñÀïÕÒ
+			//ä»äºŒå€¼å›¾åƒé‡Œæ‰¾
 			cv::findContours(imgBinary,
 				roughContours, // a vector of contours 
 				CV_RETR_EXTERNAL, // retrieve the external contours
 				CV_CHAIN_APPROX_NONE); // retrieve all pixels of each contours
 
-			//¼ÙÈçËµ´Ó»Ò¶ÈÍ¼ÏñÀïÕÒ»á²»»á¸ü¿¿Æ×£¿(²»»á£¬¸ù±¾ËÑË÷²»µ½)
+			//å‡å¦‚è¯´ä»ç°åº¦å›¾åƒé‡Œæ‰¾ä¼šä¸ä¼šæ›´é è°±ï¼Ÿ(ä¸ä¼šï¼Œæ ¹æœ¬æœç´¢ä¸åˆ°)
 			//cv::findContours(imgForGray,
 			//	roughContours, // a vector of contours 
 			//	CV_RETR_EXTERNAL, // retrieve the external contours
 			//	CV_CHAIN_APPROX_NONE); // retrieve all pixels of each contours
 
-			//ÏÈÌŞ³ıÖµ¹ı´ó»òÕß¹ıĞ¡µÄ²¿·Ö£¨¿Ó3£¬ÌŞ³ı³ıÁËÖ±ÏßÖ®ÍâµÄÂÖÀª£©
+			//å…ˆå‰”é™¤å€¼è¿‡å¤§æˆ–è€…è¿‡å°çš„éƒ¨åˆ†ï¼ˆå‘3ï¼Œå‰”é™¤é™¤äº†ç›´çº¿ä¹‹å¤–çš„è½®å»“ï¼‰
 			for (int i = 0; i < roughContours.size(); i++)
 			{
 
@@ -385,21 +385,21 @@ class FindSegmentMarker
 
 				cv::Point dreamCenter = (f_or_b) ? cv::Point(100, 960) : cv::Point(980,960);
 				double alpha = atan(fabs((double)(f_s.first.y - dreamCenter.y) / (f_s.first.x - dreamCenter.x)));
-				double beta = atan(fabs((double)(f_s.first.y - f_s.second.y) / (f_s.first.x - f_s.second.x)));//¿Ó5£¬½Ç¶ÈµÄÅĞ¶ÏÓ¦¸ÃºÍÏß¶ÎÎ»ÖÃÓĞ¹Ø
+				double beta = atan(fabs((double)(f_s.first.y - f_s.second.y) / (f_s.first.x - f_s.second.x)));//å‘5ï¼Œè§’åº¦çš„åˆ¤æ–­åº”è¯¥å’Œçº¿æ®µä½ç½®æœ‰å…³
 
 				double theta = alpha - beta;
-				cv::Point poi0Tem = detExtrePoi(roughContours[i]).first;//µãÕó×îÍâ
-				cv::Point poi1Tem = detExtrePoi(roughContours[i]).second;//µãÕó×îÄÚ
+				cv::Point poi0Tem = detExtrePoi(roughContours[i]).first;//ç‚¹é˜µæœ€å¤–
+				cv::Point poi1Tem = detExtrePoi(roughContours[i]).second;//ç‚¹é˜µæœ€å†…
 				double dis_line = sqrt(powf((poi0Tem.x - poi1Tem.x), 2) + powf((poi1Tem.y - poi0Tem.y), 2));
-				//std::cout << "ÂÖÀª´óĞ¡£º" << roughContours[i].size() << std::endl;
-				//std::cout << "Ïß¶Î³¤¶È£º" << dis_line << std::endl;
-				//std::cout << "ÇãĞ±½Ç:" << theta << std::endl;
-				if ((roughContours[i].size()>15) && (roughContours[i].size() < 500) && (theta<CV_PI / 9) && (dis_line>12))//×¢ÒâµÆÌ«ÁÁÊ±¶ÔÖÜÎ§µÄµãÓĞºÜ´óÓ°Ïì
+				//std::cout << "è½®å»“å¤§å°ï¼š" << roughContours[i].size() << std::endl;
+				//std::cout << "çº¿æ®µé•¿åº¦ï¼š" << dis_line << std::endl;
+				//std::cout << "å€¾æ–œè§’:" << theta << std::endl;
+				if ((roughContours[i].size()>15) && (roughContours[i].size() < 500) && (theta<CV_PI / 9) && (dis_line>12))//æ³¨æ„ç¯å¤ªäº®æ—¶å¯¹å‘¨å›´çš„ç‚¹æœ‰å¾ˆå¤§å½±å“
 				{
-					exactContours.push_back(roughContours[i]);//µ½´ËµÃµ½½ÏÎª×¼È·µÄÂÖÀª×é
+					exactContours.push_back(roughContours[i]);//åˆ°æ­¤å¾—åˆ°è¾ƒä¸ºå‡†ç¡®çš„è½®å»“ç»„
 				}
 			}
-			//È»ºó°´ÕÕYÖµ´ÓĞ¡µ½´óÅÅĞò
+			//ç„¶åæŒ‰ç…§Yå€¼ä»å°åˆ°å¤§æ’åº
 			for (int i = 0; i < exactContours.size(); i++)
 			{
 				for (int j = i + 1; j < exactContours.size(); j++)
@@ -413,12 +413,12 @@ class FindSegmentMarker
 					}
 				}
 			}
-			std::cout << "¼ì²âÂÖÀªÊıÁ¿£º" << exactContours.size() << std::endl;
+			std::cout << "æ£€æµ‹è½®å»“æ•°é‡ï¼š" << exactContours.size() << std::endl;
 		}
 		
 
 
-		//²éÕÒÂÖÀªÁ½¶ËµÄµã(²½ÖèÖĞ¼äÓÃµ½)
+		//æŸ¥æ‰¾è½®å»“ä¸¤ç«¯çš„ç‚¹(æ­¥éª¤ä¸­é—´ç”¨åˆ°)
 		std::pair<cv::Point, cv::Point> detExtrePoi(std::vector<cv::Point> Points)
 		{
 			cv::Point poiYMax, poiYMin;
@@ -434,16 +434,16 @@ class FindSegmentMarker
 					poiYMin = Points[i];
 				}
 			}
-			return std::make_pair(poiYMin, poiYMax);//¶ËµãË³Ğò¶¼ÊÇÓÉÍ¼ÏñÍâµ½ÄÚ
+			return std::make_pair(poiYMin, poiYMax);//ç«¯ç‚¹é¡ºåºéƒ½æ˜¯ç”±å›¾åƒå¤–åˆ°å†…
 		}
 
 
-		//ÅĞ¶ÏÏß¶Î³¤¶È
+		//åˆ¤æ–­çº¿æ®µé•¿åº¦
 		char judgeDis(cv::Point poi1, cv::Point poi2, double sSize, double lSize)
 		{
 			char k;
 			double dis = sqrt(powf((poi1.x - poi2.x), 2) + powf((poi1.y - poi2.y), 2));
-			if (dis > lSize){ k = 1; }//£¨¿Ó4£©ãĞÖµ¿ÉÒÔ¿¼ÂÇ²ÉÓÃ¾ÛÀàËã·¨½øĞĞ·ÖÎö
+			if (dis > lSize){ k = 1; }//ï¼ˆå‘4ï¼‰é˜ˆå€¼å¯ä»¥è€ƒè™‘é‡‡ç”¨èšç±»ç®—æ³•è¿›è¡Œåˆ†æ
 			else if (dis < sSize){ k = 0; }
 			else { k = -1; }
 			return k;
@@ -456,37 +456,37 @@ class FindSegmentMarker
 			sSize = longTV[num/8];
 			char k;
 			double dis = sqrt(powf((poi1.x - poi2.x), 2) + powf((poi1.y - poi2.y), 2));
-			if (dis > lSize){ k = 1; }//£¨¿Ó4£©ãĞÖµ¿ÉÒÔ¿¼ÂÇ²ÉÓÃ¾ÛÀàËã·¨½øĞĞ·ÖÎö
+			if (dis > lSize){ k = 1; }//ï¼ˆå‘4ï¼‰é˜ˆå€¼å¯ä»¥è€ƒè™‘é‡‡ç”¨èšç±»ç®—æ³•è¿›è¡Œåˆ†æ
 			else if (dis < sSize){ k = 0; }
 			else { k = -1; }
 			return k;
 		}
 
 
-		//ÉèÖÃÏß¶Î³¤¶ÌµÄ·Ö½çãĞÖµ
+		//è®¾ç½®çº¿æ®µé•¿çŸ­çš„åˆ†ç•Œé˜ˆå€¼
 		void setLSThreshold()
 		{
 			
-			cv::Mat lineDiss(exactContours.size(), 1, CV_32FC1);//ÓÃÓÚ´æ´¢Ã¿ÌõÏß¶Î¾àÀë
+			cv::Mat lineDiss(exactContours.size(), 1, CV_32FC1);//ç”¨äºå­˜å‚¨æ¯æ¡çº¿æ®µè·ç¦»
 			for (int i = 0; i < exactContours.size(); i++)
 			{
-				cv::Point poi0Tem = detExtrePoi(exactContours[i]).first;//µãÕó×îÍâ
-				cv::Point poi1Tem = detExtrePoi(exactContours[i]).second;//µãÕó×îÄÚ
+				cv::Point poi0Tem = detExtrePoi(exactContours[i]).first;//ç‚¹é˜µæœ€å¤–
+				cv::Point poi1Tem = detExtrePoi(exactContours[i]).second;//ç‚¹é˜µæœ€å†…
 				float dis_line = sqrt(powf((poi0Tem.x - poi1Tem.x), 2) + powf((poi1Tem.y - poi0Tem.y), 2));
 				lineDiss.at<float>(i) = dis_line;
 			}
 
-			std::vector<double> center;//´æ´¢¾ÛÀàÖĞĞÄ
-			cv::Mat k;//´æ´¢±êÇ©
+			std::vector<double> center;//å­˜å‚¨èšç±»ä¸­å¿ƒ
+			cv::Mat k;//å­˜å‚¨æ ‡ç­¾
 			cv::TermCriteria criteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 1000, 1.0);
 			cv::kmeans(lineDiss, 2, k, criteria, 10, 0, center);
 			shortThreshold = center[0] + (center[1] - center[0]) / 3;
-			longThreshold = center[1] - (center[1] - center[0]) / 3;//µÈ·ÖÎªÈı¶Î
+			longThreshold = center[1] - (center[1] - center[0]) / 3;//ç­‰åˆ†ä¸ºä¸‰æ®µ
 
 
-			//²ÉÓÃ·Ö¶ÎÈ¡ãĞÖµµÄ·½·¨
+			//é‡‡ç”¨åˆ†æ®µå–é˜ˆå€¼çš„æ–¹æ³•
 
-			int group = exactContours.size() / 8;//È¡ÖÜÎ§Ò»¹²°ËÌõÖ±Ïß×÷ÎªÅĞ¶ÏµÄ±ê×¼£¨Ç°ÃæµÄ±È½ÏÃÜ£¬È¡µÃ¶àÒ»Ğ©£©
+			int group = exactContours.size() / 8;//å–å‘¨å›´ä¸€å…±å…«æ¡ç›´çº¿ä½œä¸ºåˆ¤æ–­çš„æ ‡å‡†ï¼ˆå‰é¢çš„æ¯”è¾ƒå¯†ï¼Œå–å¾—å¤šä¸€äº›ï¼‰
 			int remainder = exactContours.size() % 8;
 			for (int i = 0; i < group; i++)
 			{
@@ -494,15 +494,15 @@ class FindSegmentMarker
 				/*cv::Mat lineDissGroup(6, 1, CV_32FC1);*/
 				for (int count = 1; count <= 8; count++)
 				{
-					cv::Point poi0Tem = detExtrePoi(exactContours[i * 8 + count]).first;//µãÕó×îÍâ
-					cv::Point poi1Tem = detExtrePoi(exactContours[i * 8 + count]).second;//µãÕó×îÄÚ
+					cv::Point poi0Tem = detExtrePoi(exactContours[i * 8 + count]).first;//ç‚¹é˜µæœ€å¤–
+					cv::Point poi1Tem = detExtrePoi(exactContours[i * 8 + count]).second;//ç‚¹é˜µæœ€å†…
 					float dis_line = sqrt(powf((poi0Tem.x - poi1Tem.x), 2) + powf((poi1Tem.y - poi0Tem.y), 2));
 					aveDis += dis_line;
 					//lineDissGroup.at<float>(i) = dis_line;
 				}
 				aveDis /= 8;
-				//std::vector<double> center;//´æ´¢¾ÛÀàÖĞĞÄ
-				//cv::Mat k;//´æ´¢±êÇ©
+				//std::vector<double> center;//å­˜å‚¨èšç±»ä¸­å¿ƒ
+				//cv::Mat k;//å­˜å‚¨æ ‡ç­¾
 				//cv::TermCriteria criteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 1000, 1.0);
 				//cv::kmeans(lineDissGroup, 2, k, criteria, 10, 0, center);
 				shortThreshold = aveDis*0.9;
@@ -513,21 +513,21 @@ class FindSegmentMarker
 			}
 
 			
-			for (int num = 0; num < 1; num++)//´¿´âÎªÁË±£³ÖÒ»ÖÂ£¬Ö»ÔËĞĞÒ»±é
+			for (int num = 0; num < 1; num++)//çº¯ç²¹ä¸ºäº†ä¿æŒä¸€è‡´ï¼Œåªè¿è¡Œä¸€é
 			{
 				double aveDis=0;
 				//cv::Mat lineDissGroup(6, 1, CV_32FC1);
 				for (int i = exactContours.size()-1; i > exactContours.size() - 7; i--)
 				{
-					cv::Point poi0Tem = detExtrePoi(exactContours[i]).first;//µãÕó×îÍâ
-					cv::Point poi1Tem = detExtrePoi(exactContours[i]).second;//µãÕó×îÄÚ
+					cv::Point poi0Tem = detExtrePoi(exactContours[i]).first;//ç‚¹é˜µæœ€å¤–
+					cv::Point poi1Tem = detExtrePoi(exactContours[i]).second;//ç‚¹é˜µæœ€å†…
 					float dis_line = sqrt(powf((poi0Tem.x - poi1Tem.x), 2) + powf((poi1Tem.y - poi0Tem.y), 2));
 					aveDis += dis_line;
 					/*lineDissGroup.at<float>(i) = dis_line;*/
 				}
 				aveDis /= 6;
-				//std::vector<double> center;//´æ´¢¾ÛÀàÖĞĞÄ
-				//cv::Mat k;//´æ´¢±êÇ©
+				//std::vector<double> center;//å­˜å‚¨èšç±»ä¸­å¿ƒ
+				//cv::Mat k;//å­˜å‚¨æ ‡ç­¾
 				//cv::TermCriteria criteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 1000, 1.0);
 				//cv::kmeans(lineDissGroup, 2, k, criteria, 10, 0, center);
 				shortThreshold = aveDis*0.9;
@@ -546,14 +546,14 @@ class FindSegmentMarker
 		}
 
 
-		//===============================================ÊµÑéĞÔ·½·¨====================================================//
-		//³¢ÊÔmeanshift·½·¨´ÖÌáÈ¡
+		//===============================================å®éªŒæ€§æ–¹æ³•====================================================//
+		//å°è¯•meanshiftæ–¹æ³•ç²—æå–
 		cv::Mat  testMeanhift()
 		{
 			cv::pyrMeanShiftFiltering(imgOriginal, imgMeanshift, 10, 10, 1);
 			return imgMeanshift;
 		}
-		//³¢ÊÔ´ÓÉ«²ÊÍ¨µÀ²É¼¯Í¼Ïñ
+		//å°è¯•ä»è‰²å½©é€šé“é‡‡é›†å›¾åƒ
 		cv::Mat testColor()
 		{
 			cv::Mat colorSplit(imgOriginal.size(), CV_32FC1);
@@ -580,22 +580,22 @@ class FindSegmentMarker
 
 			return colorSplit;
 		}
-		//ÓÃmaskµÄ·½·¨ÌáÈ¡Í¼Ïñ
-//		cv::Mat testMask()//(ÒÑ¾­¼¯³É
+		//ç”¨maskçš„æ–¹æ³•æå–å›¾åƒ
+//		cv::Mat testMask()//(å·²ç»é›†æˆ
 //
 //		{
 //			cv::FileStorage fs("Data\\mask0.xml", cv::FileStorage::READ);
 //			cv::Mat mask;
 //			fs["mask0"] >> mask;
-//			cv::Mat bgModel, fgModel;//;ÖĞ¼ä±äÁ¿
-//			cv::Mat result;//mask£¬ÖĞ¼ä±äÁ¿
+//			cv::Mat bgModel, fgModel;//;ä¸­é—´å˜é‡
+//			cv::Mat result;//maskï¼Œä¸­é—´å˜é‡
 //
-//			cv::grabCut(imgOriginal, mask, rectangle, bgModel, fgModel, 5, cv::GC_INIT_WITH_MASK);//¹Ø¼üº¯Êı,»®·Ö´óÖÂÇøÓò
-//			//±È½Ïº¯Êı±£ÁôÖµÎªGC_PR_FGDµÄÏñËØ
+//			cv::grabCut(imgOriginal, mask, rectangle, bgModel, fgModel, 5, cv::GC_INIT_WITH_MASK);//å…³é”®å‡½æ•°,åˆ’åˆ†å¤§è‡´åŒºåŸŸ
+//			//æ¯”è¾ƒå‡½æ•°ä¿ç•™å€¼ä¸ºGC_PR_FGDçš„åƒç´ 
 //			cv::compare(mask, cv::GC_PR_FGD, mask, cv::CMP_EQ);
-//			// ²úÉúÊä³öÍ¼Ïñ
+//			// äº§ç”Ÿè¾“å‡ºå›¾åƒ
 //			cv::Mat Foreground(imgOriginal.size(), CV_8UC3, cv::Scalar(255, 255, 255));
-//			//±³¾°ÖµÎª GC_BGD=0£¬×÷ÎªÑÚÂë
+//			//èƒŒæ™¯å€¼ä¸º GC_BGD=0ï¼Œä½œä¸ºæ©ç 
 //			imgOriginal.copyTo(Foreground, mask);
 //			cv::imwrite("Data\\afterMask.jpg", Foreground);
 //			return Foreground;
